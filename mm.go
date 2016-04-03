@@ -1,11 +1,10 @@
 package mm
 
 import (
-  "fmt"
-  "mime"
-  "path/filepath"
+  "io"
   "os"
   flac "github.com/nkcmr/mm-flac"
+  mpeg "github.com/nkcmr/mm-mpeg"
 )
 
 type nilExtractor struct {}
@@ -22,19 +21,38 @@ func ParseWithExtractor (path string, extractor Extractor) (Metadata, error) {
   return Metadata{}, nil
 }
 
-func initExtractor (path string) (Extractor, error) {
+func pickExtractor (path string) (string, error) {
+  extractors := map[string]func (r io.ReadSeeker) (bool, error){
+    "flac": flac.CanExtract,
+    "mpeg": mpeg.CanExtract,
+  }
   file, err := os.Open(path)
   if err != nil {
-    return nilExtractor{}, err
+    return "", err
   }
-  ok, err := flac.CanExtract(file)
+  for _type, canExtract := range extractors {
+    ok, err := canExtract(file)
+    if err != nil {
+      return "", err
+    }
+    if ok {
+      return _type, nil
+    }
+  }
+  return "", nil
+}
+
+func initExtractor (path string) (Extractor, error) {
+  ex, err := pickExtractor(path)
   if err != nil {
     return nilExtractor{}, err
   }
-  if ok {
-    fmt.Println("coool! flac can extract!")
-    return nilExtractor{}, nil
+  switch ex {
+  case "flac":
+    return flac.NewExtractor(), nil
+  case "mpeg":
+    return mpeg.NewExtractor(), nil
+  default:
+    return nilExtractor{}, &MusicMetadataError{E_UNSUPPORTED_TYPE, "unsupported audio type"}
   }
-  fmt.Println(mime.TypeByExtension(filepath.Ext(path)))
-  return nilExtractor{}, nil
 }
