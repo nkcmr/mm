@@ -32,5 +32,5 @@ func DetectorAudioType(rs io.ReadSeeker) (string, error) {
       }
     }
   }
-  return "", &MusicMetadataError{E_UNSUPPORTED_TYPE, "unsupported audio type"}
+  return "", &MusicMetadataError{ErrorUnsupportedType, "unsupported audio type"}
 }

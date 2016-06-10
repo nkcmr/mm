@@ -3,8 +3,9 @@ package mm
 import "fmt"
 
 type ErrorCode int
+
 const (
-  E_UNSUPPORTED_TYPE ErrorCode = iota
+  ErrorUnsupportedType ErrorCode = iota
 )
 
 type MusicMetadataError struct {

@@ -38,7 +38,7 @@ func initExtractor (rs io.ReadSeeker) (Extractor, error) {
   case "mpeg":
     ex = MpegExtractor{}
   default:
-    err = &MusicMetadataError{E_UNSUPPORTED_TYPE, "unsupported audio type"}
+    err = &MusicMetadataError{ErrorUnsupportedType, "unsupported audio type"}
   }
   return ex, err
 }

@@ -37,7 +37,6 @@ var fieldNameMap = map[MetadataField]string{
 }
 
 func (m Metadata) SetField (f MetadataField, v string) {
-  fmt.Println(f, v)
   m[f] = v
 }
 

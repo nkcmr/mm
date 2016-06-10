@@ -5,7 +5,6 @@ import (
   "os"
   "encoding/binary"
   "strings"
-  "fmt"
 )
 
 type blockType int8
@@ -64,7 +63,6 @@ func (ex FlacExtractor) Extract(rs io.ReadSeeker) (Metadata, error) {
     }
     if kind == vorbisComment {
       for field, value := range readVorbisComment(data) {
-        fmt.Println(field, value)
         if coreField, ok := vorbisFieldMap[field]; ok {
           m.SetField(coreField, value)
         }
