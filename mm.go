@@ -9,29 +9,32 @@ import (
 
 type nilExtractor struct {}
 
-func Parse (path string) (Metadata, error) {
-  extractor, err := initExtractor(path)
+// Parse takes a filename and automatically looks up an extractor to use
+func Parse (rs io.ReadSeeker) (Metadata, error) {
+  extractor, err := initExtractor(rs)
   if err != nil {
     return Metadata{}, err
   }
-  return ParseWithExtractor(path, extractor)
+  return ParseWithExtractor(rs, extractor)
 }
 
-func ParseWithExtractor (path string, extractor Extractor) (Metadata, error) {
+// ParseWithExtractor will extract music metadata out of a file with a specific
+// extractor
+func ParseWithExtractor (rs io.ReadSeeker, extractor Extractor) (Metadata, error) {
   return Metadata{}, nil
 }
 
-func pickExtractor (path string) (string, error) {
+func pickExtractor (rs io.ReadSeeker) (string, error) {
   extractors := map[string]func (r io.ReadSeeker) (bool, error){
     "flac": flac.CanExtract,
     "mpeg": mpeg.CanExtract,
   }
-  file, err := os.Open(path)
-  if err != nil {
-    return "", err
-  }
   for _type, canExtract := range extractors {
-    ok, err := canExtract(file)
+    _, err := rs.Seek(0, os.SEEK_SET)
+    if err != nil {
+      return "", err
+    }
+    ok, err := canExtract(rs)
     if err != nil {
       return "", err
     }
@@ -42,8 +45,8 @@ func pickExtractor (path string) (string, error) {
   return "", nil
 }
 
-func initExtractor (path string) (Extractor, error) {
-  ex, err := pickExtractor(path)
+func initExtractor (rs io.ReadSeeker) (Extractor, error) {
+  ex, err := pickExtractor(rs)
   if err != nil {
     return nilExtractor{}, err
   }
