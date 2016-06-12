@@ -9,8 +9,7 @@ import (
 func Parse (rs io.ReadSeeker) (Metadata, error) {
   extractor, err := initExtractor(rs)
   if err != nil {
-    var m Metadata
-    return m, err
+    return Metadata{}, err
   }
   return ParseWithExtractor(rs, extractor)
 }
@@ -28,7 +27,7 @@ func initExtractor (rs io.ReadSeeker) (Extractor, error) {
   var ex Extractor
   var err error
   var choice string
-  choice, err = DetectorAudioType(rs)
+  choice, err = DetectAudioType(rs)
   if err != nil {
     return ex, err
   }

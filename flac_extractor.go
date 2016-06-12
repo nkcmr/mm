@@ -51,8 +51,11 @@ func (k blockType) String() string {
   return "reserved"
 }
 
+// FlacExtractor represents the utility used to extract metadata from a FLAC
+// encoded audio file
 type FlacExtractor struct {}
 
+// Extract will derive Metadata from a FLAC encoded audio file
 func (ex FlacExtractor) Extract(rs io.ReadSeeker) (Metadata, error) {
   m := Metadata{}
   rs.Seek(4, os.SEEK_SET)

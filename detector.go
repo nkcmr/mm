@@ -16,7 +16,9 @@ var signatures = map[string]audioFileSignature{
   "mpeg": audioFileSignature{Offset: 0, Markers: [][]byte{[]byte{'I', 'D', '3', 2}, []byte{'I', 'D', '3', 3}, []byte{'I', 'D', '3', 4}}},
 }
 
-func DetectorAudioType(rs io.ReadSeeker) (string, error) {
+// DetectAudioType takes a readSeeker and will detect the type of audio based on
+// specific bytes that are present in the first few bytes of a file
+func DetectAudioType(rs io.ReadSeeker) (string, error) {
   for kind, sig := range signatures {
     for _, marker := range sig.Markers {
       if _, err := rs.Seek(sig.Offset, os.SEEK_SET); err != nil {
