@@ -25,8 +25,7 @@ func DetectAudioType(rs io.ReadSeeker) (string, error) {
         return "", err
       }
       data := make([]byte, len(marker))
-      _, err := io.ReadFull(rs, data)
-      if err != nil {
+      if _, err := io.ReadFull(rs, data); err != nil {
         return "", err
       }
       if reflect.DeepEqual(marker, data) {

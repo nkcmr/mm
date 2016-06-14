@@ -2,7 +2,7 @@ package mm
 
 import "fmt"
 
-type ErrorCode int
+type ErrorCode uint
 
 const (
   ErrorUnsupportedType ErrorCode = iota

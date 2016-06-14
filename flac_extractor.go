@@ -7,7 +7,7 @@ import (
   "strings"
 )
 
-type blockType int8
+type blockType uint8
 
 const (
   streaminfo blockType = 0
@@ -70,6 +70,7 @@ func (ex FlacExtractor) Extract(rs io.ReadSeeker) (Metadata, error) {
           m.SetField(coreField, value)
         }
       }
+      break
     }
     if last {
       break
