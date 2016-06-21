@@ -5,5 +5,5 @@ import (
 )
 
 type Extractor interface {
-  Extract(rs io.ReadSeeker) (Metadata, error)
+  Extract(rs io.ReadSeeker) (*Metadata, error)
 }

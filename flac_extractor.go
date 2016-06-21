@@ -56,8 +56,8 @@ func (k blockType) String() string {
 type FlacExtractor struct {}
 
 // Extract will derive Metadata from a FLAC encoded audio file
-func (ex FlacExtractor) Extract(rs io.ReadSeeker) (Metadata, error) {
-  m := Metadata{}
+func (ex FlacExtractor) Extract(rs io.ReadSeeker) (*Metadata, error) {
+  m := new(Metadata)
   rs.Seek(4, os.SEEK_SET)
   for {
     last, kind, data, err := readMetaDataBlock(rs)

@@ -59,8 +59,8 @@ func readHeader(data []byte) (h id3Header) {
 
 type MpegExtractor struct {}
 
-func (ex MpegExtractor) Extract(rs io.ReadSeeker) (Metadata, error) {
-  m := Metadata{}
+func (ex MpegExtractor) Extract(rs io.ReadSeeker) (*Metadata, error) {
+  m := new(Metadata)
   rs.Seek(3, os.SEEK_SET)
   header := make([]byte, 10)
   if _, err := io.ReadFull(rs, header); err != nil {
