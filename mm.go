@@ -21,20 +21,18 @@ var Extractors = map[AudioType]Extractor{
 
 // Parse takes a filename and automatically looks up an extractor to use
 func Parse(rs io.ReadSeeker) (*Metadata, error) {
-	extractor, err := detectExtractor(rs)
-	if err != nil {
-		return new(Metadata), err
+	var (
+		extractor Extractor
+		err       error
+	)
+	if extractor, err = detectExtractor(rs); err != nil {
+		return nil, errors.Wrap(err, "error occured while initializing extractor for detected audio type")
 	}
-	return ParseWithExtractor(rs, extractor)
-}
-
-// ParseWithExtractor will extract music metadata out of a file with a specific
-// extractor
-func ParseWithExtractor(rs io.ReadSeeker, ex Extractor) (*Metadata, error) {
-	if _, err := rs.Seek(0, os.SEEK_SET); err != nil {
+	if _, err = rs.Seek(0, os.SEEK_SET); err != nil {
 		return nil, errors.Wrap(err, "error occured while seeking data back to 0 offset")
 	}
-	return ex.Extract(rs)
+
+	return extractor.Extract(rs)
 }
 
 func detectExtractor(rs io.ReadSeeker) (Extractor, error) {
