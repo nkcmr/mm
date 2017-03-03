@@ -16,13 +16,13 @@ type audioFileSignature struct {
 }
 
 var signatures = map[AudioType]audioFileSignature{
-	FLAC: audioFileSignature{
+	FLAC: {
 		offset: 0,
 		markers: [][]byte{
 			[]byte("fLaC"),
 		},
 	},
-	MPEG: audioFileSignature{
+	MPEG: {
 		offset: 0,
 		markers: [][]byte{
 			[]byte("ID32"),
@@ -34,7 +34,7 @@ var signatures = map[AudioType]audioFileSignature{
 
 // DetectAudioType takes a readSeeker and will detect the type of audio based on
 // specific bytes that are present in the first few bytes of a file
-func DetectAudioType(rs io.ReadSeeker) (AudioType, error) {
+func DetectAudioType(rs io.ReadSeeker) (*AudioType, error) {
 	for kind, sig := range signatures {
 		for _, marker := range sig.markers {
 			if _, err := rs.Seek(sig.offset, os.SEEK_SET); err != nil {
@@ -45,7 +45,7 @@ func DetectAudioType(rs io.ReadSeeker) (AudioType, error) {
 				return nil, errors.Wrap(err, "error occured while reading data")
 			}
 			if bytes.Equal(marker, data) {
-				return kind, nil
+				return &kind, nil
 			}
 		}
 	}

@@ -14,7 +14,7 @@ const (
 	MPEG
 )
 
-var Extractors = map[AudioType]*Extractor{
+var Extractors = map[AudioType]Extractor{
 	FLAC: &FlacExtractor{},
 	MPEG: &MpegExtractor{},
 }
@@ -37,18 +37,18 @@ func ParseWithExtractor(rs io.ReadSeeker, ex Extractor) (*Metadata, error) {
 	return ex.Extract(rs)
 }
 
-func detectExtractor(rs io.ReadSeeker) (*Extractor, error) {
+func detectExtractor(rs io.ReadSeeker) (Extractor, error) {
 	var (
-		ex     *Extractor
+		ex     Extractor
 		err    error
-		choice string
+		choice *AudioType
 		ok     bool
 	)
 	if choice, err = DetectAudioType(rs); err != nil {
 		return nil, errors.Wrap(err, "error occured while detecting audio type")
 	}
-	if ex, ok = Extractors[choice]; !ok {
-		return nil, errors.New(err, "detected an audio type that does not have a corresponding extractor")
+	if ex, ok = Extractors[*choice]; !ok {
+		return nil, errors.Wrap(err, "detected an audio type that does not have a corresponding extractor")
 	}
 	return ex, nil
 }

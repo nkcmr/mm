@@ -2,7 +2,6 @@ package mm
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 // Metadata is the construct that holds metadata information about a specific
@@ -14,7 +13,11 @@ type Metadata map[MetadataField]string
 type MetadataField int8
 
 func (m MetadataField) String() string {
-	if s, ok := fieldNameMap[m]; !ok {
+	var (
+		s  string
+		ok bool
+	)
+	if s, ok = fieldNameMap[m]; !ok {
 		return "[internal]"
 	}
 	return s
