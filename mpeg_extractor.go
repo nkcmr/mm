@@ -72,10 +72,10 @@ func (ex MpegExtractor) Extract(rs io.ReadSeeker) (*Metadata, error) {
   if h.flags.extendedHeader {
 
   }
-  frames := make([]byte, h.size)
-  if _, err := io.ReadFull(rs, frames); err != nil {
+  frameData := make([]byte, h.size)
+  if _, err := io.ReadFull(rs, frameData); err != nil {
     return m, err
   }
-  fmt.Println(*h, string(frames))
+  fmt.Println(*h, frameData)
   return m, nil
 }
